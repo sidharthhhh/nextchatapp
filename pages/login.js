@@ -60,9 +60,9 @@ const Login = () => {
                         <button className='mt-4 w-full h-14 rounded-xl outline-none text-base font-semibold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500'>Login to Your account</button>
                 </form>
                 <div className='flex justify-center gap-1 text-c3 mt-5'>
-                  <span>Not a Number yet?</span>
+                  <span>Not a member yet?</span>
                   <Link href="/register"
-                  className='font-semibold text-white underline underline-offset-2 cursor-pointer'>Regester Now</Link>
+                  className='font-semibold text-white underline underline-offset-2 cursor-pointer'>Register Now</Link>
                 </div>
             </div>
         </div>
