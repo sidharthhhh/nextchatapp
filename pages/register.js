@@ -9,7 +9,7 @@ const Register = () => {
 
                 <div className='text-center'>
                     <div className='text-4xl font-bold'>
-                        Login to your Account
+                        Create New Account
                     </div>
                     <div className='mt-3 text-c3'>
                         Connect and chat with anyone and anywhere
@@ -44,6 +44,11 @@ const Register = () => {
                 </div>
 
                 <form className='flex flex-col items-center gap-3 w-[500px] mt-5'>
+                <input type="text"
+                        placeholder='Display Name'
+                        className='w-full h-14 bg-c5 rounded-xl outline-none border-none px-5 text-c3'
+                        autoComplete='off' />
+
                     <input type="email"
                         placeholder='Email'
                         className='w-full h-14 bg-c5 rounded-xl outline-none border-none px-5 text-c3'
@@ -54,15 +59,13 @@ const Register = () => {
                         className='w-full h-14 bg-c5 rounded-xl outline-none border-none px-5 text-c3'
                         autoComplete='off' />
 
-                        <div className='text-right w-full text-c3'>
-                            <span className='cursor-pointer '>Forgot password</span>
-                        </div>
-                        <button className='mt-4 w-full h-14 rounded-xl outline-none text-base font-semibold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500'>Login to Your account</button>
+                     
+                        <button className='mt-4 w-full h-14 rounded-xl outline-none text-base font-semibold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500'>Sign Up</button>
                 </form>
                 <div className='flex justify-center gap-1 text-c3 mt-5'>
-                  <span>Not a member yet?</span>
-                  <Link href="/register"
-                  className='font-semibold text-white underline underline-offset-2 cursor-pointer'>Register Now</Link>
+                  <span>Already Have an account?</span>
+                  <Link href="/login"
+                  className='font-semibold text-white underline underline-offset-2 cursor-pointer'>Login Now</Link>
                 </div>
             </div>
         </div>
