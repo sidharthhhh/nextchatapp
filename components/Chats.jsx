@@ -1,30 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useChatContext } from "@/context/chatContext";
-import { Timestamp,
+import {
+  Timestamp,
   collection,
   doc,
   getDoc,
   onSnapshot,
   query,
   updateDoc,
-  where} from "firebase/firestore";
+  where,
+} from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { RiSearch2Line } from "react-icons/ri";
 import { useAuth } from "@/context/authContext";
 import Avatar from "./Avatar";
-
-
+import { formateDate } from "@/utils/helpers";
 
 const Chats = () => {
-  const { users,
+  const {
+    users,
     setUsers,
     selectedChat,
     setSelectedChat,
     chats,
-    setChats} = useChatContext();
+    setChats,
+    dispatch,
+  } = useChatContext();
   const [search, setSearch] = useState("");
   const { currentUser } = useAuth();
 
+  const isBlockExecutedRef = useRef(false);
+  const isUserFetchedRef = useRef(false);
   useEffect(() => {
     onSnapshot(collection(db, "users"), (snapshot) => {
       const updatedUsers = {};
@@ -33,22 +39,56 @@ const Chats = () => {
         console.log(doc.data());
       });
       setUsers(updatedUsers);
+      if (!isBlockExecutedRef.current) {
+        isUserFetchedRef.current = true;
+      }
     });
   }, []);
-   
+
   useEffect(() => {
     const getChats = () => {
-      const unsub = onSnapshot (doc(db, "userChats", currentUser.uid),(doc) => {
-        if(doc.exists()){
+      const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
+        if (doc.exists()) {
           const data = doc.data();
           setChats(data);
+
+          if (!isBlockExecutedRef.current && isUserFetchedRef.current && users) {
+            const firstChat = Object.values(data).sort(
+              (a, b) => b.date - a.date
+            )[0];
+
+            if (firstChat) {
+              const user = users[firstChat?.userInfo?.uid];
+
+              handleSelect(user);
+            }
+
+            isBlockExecutedRef.current = true;
+          }
         }
-      }
-      );
+      });
     };
     currentUser.uid && getChats();
-  }, []);
+  }, [isBlockExecutedRef.current, users]);
 
+  const filteredChats = Object.entries(chats || {})
+    .filter(
+      ([, chat]) =>
+        chat?.userInfo?.displayName
+          .toLowerCase()
+          .includes(search.toLocaleLowerCase()) ||
+        chat?.lastMessge?.text
+          .toLowerCase()
+          .includes(search.toLocaleLowerCase())
+    )
+    .sort((a, b) => b[1].date - a[1].date);
+
+  // console.log(filteredChats)
+
+  const handleSelect = (user, selectedChatId) => {
+    setSelectedChat(user);
+    dispatch({ type: "CHANGE_USER", payload: user });
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -63,24 +103,46 @@ const Chats = () => {
         />
       </div>
       <ul className="flex flex-col w-full my-5 gap-[2px]">
-        <li className={'h-[90px] flex items-center gap-4 rounded-3xl hover:bg-c1 p-4 cursor-pointer bg-c1' 
-          }>
-            <Avatar size="x-large" user={currentUser} />
-            <div className="flex flex-col gap-1 grow relative">
-              <span className="text-base text-white flex items-center justify-between">
-                <div className="font-medium">displayName</div>
-                <div className="text-c3 text-xs">date</div>
+        {Object.keys(users || {}).length > 0 &&
+          filteredChats?.map((chat) => {
+            const timestamp = new Timestamp(
+              chat[1].date.seconds,
+              chat[1].date.nanoseconds
+            );
 
-              </span>
-              <p className="text-sm text-c3 line-clamp-1 break-all">
-                Last Message gksdkbdsk gkfka jhfkhdka kk 
-              </p>
-              <span className="absolute right-0 top-7 min-w-[20px] h-5 rounded-full bg-red-500 flex justify-center items-center text-sm">5</span>
+            const date = timestamp.toDate();
 
-            </div>
+            // console.log(date)
 
+            const user = users[chat[1].userInfo.uid];
 
-        </li>
+            return (
+              // eslint-disable-next-line react/jsx-key
+              <li
+                key={chat[0]}
+                onClick={() => handleSelect(user, chat[0])}
+                className={`h-[90px] flex items-center gap-4 rounded-3xl hover:bg-c1 p-4 cursor-pointer ${
+                  selectedChat?.uid === user?.uid ? "bg-c1" : ""
+                }`}
+              >
+                <Avatar size="x-large" user={user} />
+                <div className="flex flex-col gap-1 grow relative">
+                  <span className="text-base text-white flex items-center justify-between">
+                    <div className="font-medium">{user?.displayName}</div>
+                    <div className="text-c3 text-xs">{formateDate(date)}</div>
+                  </span>
+                  <p className="text-sm text-c3 line-clamp-1 break-all">
+                    {chat[1]?.lastMessage?.text ||
+                      (chat[1]?.lastMessage?.img && "image") ||
+                      "Send first message"}
+                  </p>
+                  <span className="absolute right-0 top-7 min-w-[20px] h-5 rounded-full bg-red-500 flex justify-center items-center text-sm">
+                    5
+                  </span>
+                </div>
+              </li>
+            );
+          })}
       </ul>
     </div>
   );
