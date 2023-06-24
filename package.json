@@ -16,6 +16,7 @@
     "eslint-plugin-react-hooks": "^5.0.0-canary-c8deb5db6-20230622",
     "firebase": "^9.23.0",
     "firestore": "^1.1.6",
+    "moment": "^2.29.4",
     "next": "13.4.6",
     "postcss": "8.4.24",
     "react": "18.2.0",

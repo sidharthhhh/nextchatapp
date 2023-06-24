@@ -30,23 +30,47 @@ export const ChatContextProvider = ({ children }) => {
         user: null,
     };
 
+    // const chatReducer = (state, action) => {
+    //     switch (action.type) {
+    //         case "CHANGE_USER":
+    //             return {
+    //                 user: action.payload,
+    //                 chatId:
+    //                     currentUser.uid > action.payload.uid
+    //                         ? currentUser.uid + action.payload.uid
+    //                         : action.payload.uid + currentUser.uid,
+    //             };
+    //         case "EMPTY":
+    //             return INITIAL_STATE;
+
+    //         default:
+    //             return state;
+    //     }
+    // };
+
+    // that is the code corrction by help of chat gpt 
+
     const chatReducer = (state, action) => {
         switch (action.type) {
             case "CHANGE_USER":
-                return {
-                    user: action.payload,
-                    chatId:
-                        currentUser.uid > action.payload.uid
-                            ? currentUser.uid + action.payload.uid
-                            : action.payload.uid + currentUser.uid,
-                };
+                if (currentUser && action.payload) {
+                    return {
+                        user: action.payload,
+                        chatId:
+                            currentUser.uid > action.payload.uid
+                                ? currentUser.uid + action.payload.uid
+                                : action.payload.uid + currentUser.uid,
+                    };
+                }
+                // Handle the case where currentUser or action.payload is null or undefined
+                return state;
             case "EMPTY":
                 return INITIAL_STATE;
-
             default:
                 return state;
         }
     };
+
 
     const [state, dispatch] = useReducer(chatReducer, INITIAL_STATE);
 
