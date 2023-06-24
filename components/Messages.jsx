@@ -1,7 +1,35 @@
-import React from "react";
+import { db } from "@/firebase/firebase";
+import { useChatContext } from "@/context/chatContext";
+import React, { useEffect, useRef, useState } from "react";
+import { doc, onSnapshot } from "firebase/firestore";
+import Message from "./Message";
 
 const Messages = () => {
-  return <div>Messages</div>;
+    const [messages, setMessages] = useState([]);
+    const { data } = useChatContext();
+    const ref = useRef();
+
+    useEffect(() => {
+        const unsub = onSnapshot(doc(db, "chats", data.chatId), (doc) => {
+            if (doc.exists()) {
+                setMessages(doc.data().messages);
+            }
+       
+        });
+        return () => unsub();
+    }, [data.chatId]);
+
+
+    return (
+        <div
+            ref={ref}
+            className="grow p-5 overflow-auto scrollbar flex flex-col"
+        >
+            {messages.map((m) => {
+                    return <Message message={m} key={m.id} />;
+                })}
+        </div>
+    );
 };
 
 export default Messages;
