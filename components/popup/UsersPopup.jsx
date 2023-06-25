@@ -85,6 +85,7 @@ const UsersPopup = (props) => {
             Object.values(users).map((user) => (
               // eslint-disable-next-line react/jsx-key
               <div
+                key={user.id}
                 className="flex items-center gap-4 rounded-xl hover:bg-c5 py-2 px-4 cursor-pointer"
                 onClick={() => handleSelect(user)}
               >
