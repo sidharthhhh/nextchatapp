@@ -9,20 +9,30 @@ const PopupWrapper = (props) => {
         onClick={props.onHide}
       ></div>
 
-      <div className="flex flex-col w-[500px] max-h-[80%] min-h-[600px] bg-c2 relative z-10 rounded-3xl">
-        <div className="shrink-0 p-6 flex items-center justify-between">
-          <div className="text-lg font-semibold">{props.title || ""}</div>
-          <Icon
-            size="small"
-            icon={<IoClose size={20} />}
-            onClick={props.onHide}
-          />
-        </div>
+<div
+                className={`flex flex-col w-[500px] max-h-[80%] bg-c2 relative z-10 rounded-3xl ${
+                    props.shortHeight ? "" : "min-h-[600px]"
+                }`}
+            >
+                {!props.noHeader && (
+                    <div className="shrink-0 p-6 flex items-center justify-between">
+                        <div className="text-lg font-semibold">
+                            {props.title || ""}
+                        </div>
+                        <Icon
+                            size="small"
+                            icon={<IoClose size={20} />}
+                            onClick={props.onHide}
+                        />
+                    </div>
+                )}
 
-        <div className="grow flex flex-col p-6 pt-0">{props.children}</div>
-      </div>
-    </div>
-  );
+                <div className="grow flex flex-col p-6 pt-0">
+                    {props.children}
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default PopupWrapper;
