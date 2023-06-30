@@ -5,10 +5,10 @@ import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCcXuflaQd4GfoqyTiBqQp99Tazbfnq2Q0",
-  authDomain: "next-chat-app-fef8e.firebaseapp.com",
-  projectId: "next-chat-app-fef8e",
-  storageBucket: "next-chat-app-fef8e.appspot.com",
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
   messagingSenderId: "",
   appId: "",
 };
